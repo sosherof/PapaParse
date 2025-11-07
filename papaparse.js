@@ -256,11 +256,6 @@ License: MIT
 		return streamer.stream(_input);
 	}
 
-
-
-
-
-
 	function JsonToCsv(_input, _config)
 	{
 		// Default configuration
@@ -1308,7 +1303,6 @@ License: MIT
 						row[field] = value;
 				}
 
-
 				if (_config.header)
 				{
 					if (j > _fields.length)
@@ -1317,18 +1311,29 @@ License: MIT
 						addError('FieldMismatch', 'TooFewFields', 'Too few fields: expected ' + _fields.length + ' fields but parsed ' + j, _rowCounter + i);
 				}
 
+				if (isFunction(_config.rowValidation))
+				{
+					let validation = _config.rowValidation(_input, row);
+					if (validation!==true) {	//only accept rows with true, otherwise the value is an error message
+						addError('RowValidation', 'ValidationFailed', validation, _rowCounter + i);
+						return false;
+					}
+				}
+				
 				return row;
 			}
 
 			var incrementBy = 1;
 			if (!_results.data.length || Array.isArray(_results.data[0]))
 			{
-				_results.data = _results.data.map(processRow);
+				_results.data = _results.data.map(processRow).filter((row) => row);
 				incrementBy = _results.data.length;
 			}
-			else
-				_results.data = processRow(_results.data, 0);
-
+			else {
+				const row = processRow(_results.data, 0);
+				if (row)
+					_results.data = row;
+			}
 
 			if (_config.header && _results.meta)
 				_results.meta.fields = _fields;
