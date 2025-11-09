@@ -1313,7 +1313,7 @@ License: MIT
 
 				if (isFunction(_config.rowValidation))
 				{
-					let validation = _config.rowValidation(_input, row);
+					let validation = _config.rowValidation(_input, row, _results.data);
 					if (validation!==true) {	//only accept rows with true, otherwise the value is an error message
 						addError('RowValidation', 'ValidationFailed', validation, _rowCounter + i);
 						return false;
