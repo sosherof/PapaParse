@@ -1317,7 +1317,8 @@ License: MIT
 				{
 					let validation = _config.rowValidation(_input, row, dataTransformedSoFar);
 					if (validation!==true) {	//only accept rows with true, otherwise the value is an error message
-						addError('RowValidation', 'ValidationFailed', validation, _rowCounter + i);
+						if (validation)	//if validation === false, don't log the error
+							addError('RowValidation', 'ValidationFailed', validation, _rowCounter + i);
 						return false;
 					}
 				}
