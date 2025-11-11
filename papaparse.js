@@ -1243,6 +1243,13 @@ License: MIT
 			// if _results.data[0] is not an array, we are in a step where _results.data is the row.
 			else
 				_results.data.forEach(addHeader);
+
+			if (Array.isArray(_config.required_headers)) {
+				const hasRequiredHeaders = _config.required_headers.every(field = _fields.includes(field));
+
+				if (!hasRequiredHeaders)
+					throw new Error('Required headers missing');
+			}
 		}
 
 		function shouldApplyDynamicTyping(field) {
